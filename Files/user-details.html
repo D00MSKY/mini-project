@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+
+        .but{
+            background: #c9c9c9;
+            border-color: aliceblue;
+            margin: 10px;
+            width: 50%;
+            height: 5vh;
+        }
+
+        #titleAlign{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: self-end;
+
+        }
+
+        .titleDiv{
+            background: rgba(178, 178, 178, 0.6);
+            width: 15%;
+            height: 23vh;
+            margin: 1%;
+            font-size: 2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1%;
+            border: solid rgba(178, 178, 178, 0.6);
+            border-radius: 10px;
+            align-items: flex-end;
+        }
+
+        #elAlign{
+            display: flex;
+            justify-content: space-around;
+        }
+
+        button{
+            margin: 0 5% 0 5%;
+            height: 5rem;
+            font-size: 20px;
+            background: #cbe8f5;
+            border-radius: 50px;
+            border-color: #89c0ff;
+        }
+
+        #card{
+            background: #a5d5f5;
+            display: flex;
+            /*justify-content: center;*/
+            flex-direction: column;
+            border-radius: 50px;
+            color: #0a0a0a;
+            border: solid #3e9ffa;
+            height: 50vh;
+        }
+        p{
+            /*margin: 0;*/
+        }
+        h3{
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+
+<!--В index.html-->
+<!--1 отримати масив об'єктів з endpoint`а https://jsonplaceholder.typicode.com/users-->
+<!--2 Вивести id,name всіх user в index.html. Окремий блок для кожного user.-->
+<!--3 Додати кожному блоку кнопку/посилання , при кліку на яку відбувається перехід  на сторінку user-details.html, котра має детальну інфорацію про об'єкт на який клікнули-->
+
+
+<!--На странице user-details.html:-->
+<!--4 Вивести всю, без виключення, інформацію про об'єкт user на який клікнули-->
+<!--5 Додати кнопку "post of current user", при кліку на яку, з'являються title всіх постів поточного юзера-->
+<!--(для получения постов используйте эндпоинт https://jsonplaceholder.typicode.com/users/USER_ID/posts)-->
+<!--6 Каждому посту додати кнопку/посилання, при кліку на яку відбувається перехід на сторінку post-details.html, котра має детальну інфу про поточний пост.-->
+
+<!--На странице post-details.html:-->
+<!--7 Вивести всю, без виключення, інформацію про об'єкт post на який клікнули .-->
+<!--8 Нижчє інформаці про пост, вивести всі коментарі поточного поста (ендпоінт  - https://jsonplaceholder.typicode.com/posts/POST_ID/comments)-->
+
+<!--Стилизація проєкта - -->
+<!--index.html - всі блоки з user - по 2 в рядок. кнопки/аосилвння розташувати під інформацією про user.-->
+<!--user-details.html - блок з інфою про user зверху сторінки. Кнопка нижчє, на 90% ширини сторінки, по центру.-->
+<!--блоки з короткою іфною про post - в ряд по 5 .-->
+<!--post-details.html - блок з інфою про пост зверху. Коментарі - по 4 в ряд.-->
+<!--Всі елементи котрі характеризують users, posts, comments візуалізувати, так, щоб було видно що це блоки (дати фон. марджини і тд)-->
+
+<div id="container"></div>
+
+<script>
+    let uId = new URLSearchParams(window.location.search).get('id')
+    fetch(`http://jsonplaceholder.typicode.com/users/${uId}`)
+        .then(res => res.json())
+        .then((user) => {
+            let userCard = document.createElement('div')
+            let elAlign = document.createElement('div')
+            container.appendChild(userCard)
+            userCard.id = 'card'
+            let parAlign = document.createElement('div')
+            elAlign.appendChild(parAlign)
+            // console.log(user)
+            for (const userKey in user) {
+                if(userKey !== 'address' && userKey !== 'company') {
+                    let par = document.createElement('p')
+                    parAlign.appendChild(par)
+                    par.innerHTML = `<h3><i>${userKey}:</i> ${user[userKey]}</h3><br>`
+                }
+            }
+            let addressUl = document.createElement('ul')
+            addressUl.innerHTML = `<h3>Address:</h3>`
+            elAlign.appendChild(addressUl)
+            let compUl = document.createElement('ul')
+            elAlign.appendChild(compUl)
+            compUl.innerHTML = `<h3>Company:</h3>`
+            for (const userElement in user.address) {
+                let addressLi = document.createElement('li')
+                addressUl.appendChild(addressLi)
+                if (userElement !== 'geo') {
+                    addressLi.innerHTML = `<h4><i>${userElement}:</i> ${user.address[userElement]}</h4>`
+                } else {
+                    addressLi.innerHTML = `<h4><i>${userElement}:</i> lat: ${user.address.geo.lat}, lng: ${user.address.geo.lng}</h4>`
+                }
+            }
+            for (const companyKey in user.company) {
+                let compLi = document.createElement('li')
+                compUl.appendChild(compLi)
+                compLi.innerHTML = `<h4><i>${companyKey}:</i> ${user.company[companyKey]}</h4>`
+            }
+
+
+            userCard.appendChild(elAlign)
+            elAlign.id = 'elAlign'
+            let btn = document.createElement('button')
+            btn.innerHTML = `posts of current user`
+            userCard.appendChild(btn)
+            let titleAlign = document.createElement('div')
+            titleAlign.id = 'titleAlign'
+            container.appendChild(titleAlign)
+
+            fetch(`https://jsonplaceholder.typicode.com/users/${uId}/posts`)
+                .then(res => res.json())
+                .then((posts) => {
+                    // console.log(posts)
+                    btn.onclick = function () {
+                    for (const post of posts) {
+                        console.log(post.id)
+                        let titleDiv = document.createElement('div')
+                        titleDiv.classList.add('titleDiv')
+                        titleAlign.appendChild(titleDiv)
+                        titleDiv.innerHTML = `"${post.title}"`
+                        let but = document.createElement('button')
+                        but.classList.add('but')
+                        but.innerHTML = `post-details`
+                        titleDiv.appendChild(but)
+                        but.onclick = function (){
+                            window.location.href = `post-details.html?id=${post.id}`
+                        }
+                        btn.disabled = true
+                        }
+                        }
+                })
+
+
+        })
+</script>
+</body>
+</html>

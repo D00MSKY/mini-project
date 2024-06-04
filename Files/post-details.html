@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #postDiv{
+            background: #a5d5f5;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 50px;
+            color: #0a0a0a;
+            border: solid #3e9ffa;
+            height: fit-content;
+            padding-left: 2%;
+        }
+        .comInfo {
+            background: rgba(178, 178, 178, 0.6);
+            width: 20%;
+            height: max-content;
+            margin: 1%;
+            font-size: 2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1%;
+            border: solid rgba(178, 178, 178, 0.6);
+            border-radius: 10px;
+            align-items: flex-end;
+            flex-shrink: 3;
+        }
+        #comDiv{
+            display: flex;
+        }
+        #comDiv{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: self-end;
+        }
+    </style>
+
+</head>
+<body>
+
+<!--В index.html-->
+<!--1 отримати масив об'єктів з endpoint`а https://jsonplaceholder.typicode.com/users-->
+<!--2 Вивести id,name всіх user в index.html. Окремий блок для кожного user.-->
+<!--3 Додати кожному блоку кнопку/посилання , при кліку на яку відбувається перехід  на сторінку user-details.html, котра має детальну інфорацію про об'єкт на який клікнули-->
+
+
+<!--На странице user-details.html:-->
+<!--4 Вивести всю, без виключення, інформацію про об'єкт user на який клікнули-->
+<!--5 Додати кнопку "post of current user", при кліку на яку, з'являються title всіх постів поточного юзера-->
+<!--(для получения постов используйте эндпоинт https://jsonplaceholder.typicode.com/users/USER_ID/posts)-->
+<!--6 Каждому посту додати кнопку/посилання, при кліку на яку відбувається перехід на сторінку post-details.html, котра має детальну інфу про поточний пост.-->
+
+<!--На странице post-details.html:-->
+<!--7 Вивести всю, без виключення, інформацію про об'єкт post на який клікнули .-->
+<!--8 Нижчє інформаці про пост, вивести всі коментарі поточного поста (ендпоінт  - https://jsonplaceholder.typicode.com/posts/POST_ID/comments)-->
+
+<!--Стилизація проєкта - -->
+<!--index.html - всі блоки з user - по 2 в рядок. кнопки/аосилвння розташувати під інформацією про user.-->
+<!--user-details.html - блок з інфою про user зверху сторінки. Кнопка нижчє, на 90% ширини сторінки, по центру.-->
+<!--блоки з короткою іфною про post - в ряд по 5 .-->
+<!--post-details.html - блок з інфою про пост зверху. Коментарі - по 4 в ряд.-->
+<!--Всі елементи котрі характеризують users, posts, comments візуалізувати, так, щоб було видно що це блоки (дати фон. марджини і тд)-->
+
+<div id="container">
+    <div id="postDiv"></div>
+    <div id="comDiv"></div>
+</div>
+
+
+<script>
+
+        let pId = new URLSearchParams(window.location.search).get('id')
+        fetch(`https://jsonplaceholder.typicode.com/posts/${pId}`)
+            .then(res => res.json())
+            .then((post) => {
+                // console.log(post)
+                for (const postKey in post) {
+                    let postInfo = document.createElement('div')
+                    postDiv.appendChild(postInfo)
+                    postInfo.innerHTML = `<h3><i>${postKey}:</i> ${post[postKey]}</h3><br>`
+                }
+            })
+
+        fetch(`https://jsonplaceholder.typicode.com/posts/${pId}/comments`)
+            .then(res => res.json())
+            .then((com) => {
+                for (const comKey of com) {
+                    // console.log(com)
+                    let comInfo = document.createElement('div')
+                    comInfo.classList.add('comInfo')
+                    comDiv.appendChild(comInfo)
+
+                    comInfo.innerHTML = `"${comKey.body}"`
+                    console.log(comKey.body)
+                }
+            })
+</script>
+
+</body>
+</html>
